@@ -902,6 +902,9 @@ def build_app():
       const ASSETS = __ASSETS__;
 
       const charts = new Map();
+      Chart.defaults.font.family = '"IBM Plex Sans", "Pretendard", "Noto Sans KR", sans-serif';
+      Chart.defaults.font.size = 12;
+      Chart.defaults.font.lineHeight = 1.4;
       let currentMode = "period";
       let currentPeriod = "7d";
       let currentStart = "";
@@ -1160,6 +1163,9 @@ def build_app():
               plugins: {
                 legend: { display: showMA },
                 tooltip: {
+                  padding: 10,
+                  titleFont: { size: 12, lineHeight: 1.4, weight: "600" },
+                  bodyFont: { size: 12, lineHeight: 1.4 },
                   callbacks: {
                     label: (ctx) => formatNumber(ctx.parsed.y, asset.ticker)
                   }

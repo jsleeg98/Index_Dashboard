@@ -1275,7 +1275,7 @@ def build_app():
             rows.push([asset.name, asset.ticker, date, asset.close[idx]]);
           });
         });
-        const csv = rows.map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
+        const csv = rows.map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\\n");
         const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");

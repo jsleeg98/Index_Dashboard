@@ -703,7 +703,7 @@ def build_app():
         margin: 24px auto 0;
         display: grid;
         gap: 18px;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .card {
@@ -820,6 +820,7 @@ def build_app():
       @media (max-width: 640px) {
         h1 { font-size: 22px; }
         .page { padding: 20px 14px 40px; }
+        .content { grid-template-columns: 1fr; }
       }
     </style>
   </head>

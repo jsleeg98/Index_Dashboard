@@ -875,6 +875,9 @@ def build_app():
             <div class="option-row">
               <label><input type="checkbox" id="toggle-ma" /> 이동평균</label>
               <input type="number" id="ma-window" min="2" max="60" value="5" />
+              <label><input type="checkbox" id="toggle-bb" /> 볼린저 밴드</label>
+              <input type="number" id="bb-window" min="5" max="60" value="20" />
+              <input type="number" id="bb-std" min="1" max="4" step="0.5" value="2" />
               <button class="action-btn" id="export-csv">CSV 내보내기</button>
               <button class="action-btn" id="refresh-data">갱신</button>
             </div>
@@ -896,6 +899,9 @@ def build_app():
       const assetFiltersEl = document.getElementById("asset-filters");
       const toggleMa = document.getElementById("toggle-ma");
       const maWindowInput = document.getElementById("ma-window");
+      const toggleBb = document.getElementById("toggle-bb");
+      const bbWindowInput = document.getElementById("bb-window");
+      const bbStdInput = document.getElementById("bb-std");
       const exportCsvBtn = document.getElementById("export-csv");
       const refreshBtn = document.getElementById("refresh-data");
 
@@ -1048,6 +1054,9 @@ def build_app():
       function saveOptions() {
         safeStorageSet("showMA", toggleMa.checked ? "1" : "0");
         safeStorageSet("maWindow", maWindowInput.value);
+        safeStorageSet("showBB", toggleBb.checked ? "1" : "0");
+        safeStorageSet("bbWindow", bbWindowInput.value);
+        safeStorageSet("bbStd", bbStdInput.value);
       }
 
       function loadOptions() {
@@ -1055,6 +1064,15 @@ def build_app():
         const savedWindow = parseInt(safeStorageGet("maWindow"), 10);
         if (!Number.isNaN(savedWindow)) {
           maWindowInput.value = Math.min(60, Math.max(2, savedWindow));
+        }
+        toggleBb.checked = safeStorageGet("showBB") === "1";
+        const savedBbWindow = parseInt(safeStorageGet("bbWindow"), 10);
+        if (!Number.isNaN(savedBbWindow)) {
+          bbWindowInput.value = Math.min(60, Math.max(5, savedBbWindow));
+        }
+        const savedBbStd = parseFloat(safeStorageGet("bbStd"));
+        if (!Number.isNaN(savedBbStd)) {
+          bbStdInput.value = Math.min(4, Math.max(1, savedBbStd));
         }
       }
 
@@ -1393,6 +1411,27 @@ def build_app():
       });
 
       maWindowInput.addEventListener("change", () => {
+        saveOptions();
+        if (lastPayload) {
+          renderCharts(lastPayload.assets);
+        }
+      });
+
+      toggleBb.addEventListener("change", () => {
+        saveOptions();
+        if (lastPayload) {
+          renderCharts(lastPayload.assets);
+        }
+      });
+
+      bbWindowInput.addEventListener("change", () => {
+        saveOptions();
+        if (lastPayload) {
+          renderCharts(lastPayload.assets);
+        }
+      });
+
+      bbStdInput.addEventListener("change", () => {
         saveOptions();
         if (lastPayload) {
           renderCharts(lastPayload.assets);

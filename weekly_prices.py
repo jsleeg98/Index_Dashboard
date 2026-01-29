@@ -739,6 +739,15 @@ def build_app():
       .change.good { color: var(--good); }
       .change.bad { color: var(--bad); }
 
+      .hover-readout {
+        font-size: 13px;
+        color: var(--muted);
+        min-height: 26px;
+        line-height: 1.8;
+        padding: 4px 0;
+        letter-spacing: 0.3px;
+      }
+
       .status {
         max-width: 1180px;
         margin: 16px auto 0;
@@ -1090,6 +1099,7 @@ def build_app():
           </header>
           <div class="price">${formatNumber(asset.current, asset.ticker)}</div>
           <div class="change ${changeClass}">${changeSymbol}</div>
+          <div class="hover-readout">포인트에 마우스를 올리면 값 표시</div>
           <div class="chart-wrap"><canvas></canvas></div>
         `;
 

@@ -1090,6 +1090,28 @@ def build_app():
         return result;
       }
 
+      function computeBollingerBands(values, windowSize, stdMultiplier) {
+        const middle = [];
+        const upper = [];
+        const lower = [];
+        for (let i = 0; i < values.length; i += 1) {
+          if (i + 1 < windowSize) {
+            middle.push(null);
+            upper.push(null);
+            lower.push(null);
+            continue;
+          }
+          const slice = values.slice(i + 1 - windowSize, i + 1);
+          const mean = slice.reduce((acc, value) => acc + value, 0) / windowSize;
+          const variance = slice.reduce((acc, value) => acc + (value - mean) ** 2, 0) / windowSize;
+          const std = Math.sqrt(variance);
+          middle.push(mean);
+          upper.push(mean + std * stdMultiplier);
+          lower.push(mean - std * stdMultiplier);
+        }
+        return { upper, middle, lower };
+      }
+
       function renderSkeleton(count) {
         destroyCharts();
         cardsEl.innerHTML = "";
@@ -1133,6 +1155,9 @@ def build_app():
 
         const showMA = toggleMa.checked;
         const maWindow = Math.min(60, Math.max(2, parseInt(maWindowInput.value, 10) || 5));
+        const showBB = toggleBb.checked;
+        const bbWindow = Math.min(60, Math.max(5, parseInt(bbWindowInput.value, 10) || 20));
+        const bbStd = Math.min(4, Math.max(1, parseFloat(bbStdInput.value) || 2));
 
         assets.forEach((asset, index) => {
           const card = buildCard(asset);
@@ -1164,6 +1189,40 @@ def build_app():
               backgroundColor: "rgba(0,0,0,0)",
               pointRadius: 0,
               borderDash: [6, 6],
+              tension: 0.25
+            });
+          }
+
+          if (showBB) {
+            const bands = computeBollingerBands(asset.close, bbWindow, bbStd);
+            const bandColor = "rgba(77, 212, 255, 0.35)";
+            const bandFill = "rgba(77, 212, 255, 0.12)";
+            datasets.push({
+              label: `볼린저 상단 (${bbWindow}, ${bbStd})`,
+              data: bands.upper,
+              borderColor: bandColor,
+              backgroundColor: bandFill,
+              pointRadius: 0,
+              borderDash: [4, 4],
+              tension: 0.25
+            });
+            datasets.push({
+              label: `볼린저 하단 (${bbWindow}, ${bbStd})`,
+              data: bands.lower,
+              borderColor: bandColor,
+              backgroundColor: bandFill,
+              pointRadius: 0,
+              borderDash: [4, 4],
+              tension: 0.25,
+              fill: "-1"
+            });
+            datasets.push({
+              label: `볼린저 중간선 (${bbWindow})`,
+              data: bands.middle,
+              borderColor: "rgba(255, 255, 255, 0.5)",
+              backgroundColor: "rgba(0,0,0,0)",
+              pointRadius: 0,
+              borderDash: [2, 4],
               tension: 0.25
             });
           }

@@ -804,7 +804,7 @@ def build_app():
       }
 
       .skeleton-chart {
-        height: 200px;
+        height: 240px;
       }
 
       @keyframes shimmer {
@@ -812,9 +812,14 @@ def build_app():
         100% { transform: translateX(300%); }
       }
 
+      .chart-wrap {
+        height: 240px;
+      }
+
       canvas {
+        display: block;
         width: 100% !important;
-        height: 220px !important;
+        height: 100% !important;
       }
 
       @media (max-width: 640px) {
@@ -1085,7 +1090,7 @@ def build_app():
           </header>
           <div class="price">${formatNumber(asset.current, asset.ticker)}</div>
           <div class="change ${changeClass}">${changeSymbol}</div>
-          <canvas></canvas>
+          <div class="chart-wrap"><canvas></canvas></div>
         `;
 
         return card;

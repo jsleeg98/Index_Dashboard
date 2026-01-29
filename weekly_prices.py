@@ -1156,6 +1156,7 @@ def build_app():
             options: {
               responsive: true,
               maintainAspectRatio: false,
+              interaction: { mode: "nearest", intersect: false },
               plugins: {
                 legend: { display: showMA },
                 tooltip: {
@@ -1178,6 +1179,24 @@ def build_app():
                 }
               }
             }
+          });
+          const hoverReadout = card.querySelector(".hover-readout");
+          const defaultHoverText = "포인트에 마우스를 올리면 값 표시";
+          const updateHover = (event) => {
+            const points = chart.getElementsAtEventForMode(event, "nearest", { intersect: false }, true);
+            if (!points.length) {
+              hoverReadout.textContent = defaultHoverText;
+              return;
+            }
+            const primaryPoint = points.find(point => point.datasetIndex === 0) || points[0];
+            const idx = primaryPoint.index;
+            const dateLabel = asset.dates[idx];
+            const priceValue = asset.close[idx];
+            hoverReadout.textContent = `${dateLabel} · ${formatNumber(priceValue, asset.ticker)}`;
+          };
+          canvas.addEventListener("mousemove", updateHover);
+          canvas.addEventListener("mouseleave", () => {
+            hoverReadout.textContent = defaultHoverText;
           });
           charts.set(asset.ticker, chart);
         });

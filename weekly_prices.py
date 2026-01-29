@@ -556,6 +556,7 @@ def build_app():
         font-family: "IBM Plex Sans", "Pretendard", "Noto Sans KR", sans-serif;
         color: var(--text);
         background: radial-gradient(circle at top right, #1b2230, #0c0f14 60%);
+        line-height: 1.5;
       }
 
       .page {
@@ -722,6 +723,7 @@ def build_app():
       .asset-title {
         font-size: 18px;
         margin: 0;
+        line-height: 1.3;
       }
 
       .meta {
@@ -734,6 +736,7 @@ def build_app():
       .price {
         font-size: 20px;
         font-weight: 600;
+        line-height: 1.25;
       }
 
       .change.good { color: var(--good); }

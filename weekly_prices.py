@@ -1170,6 +1170,7 @@ def build_app():
       async function loadData(params) {
         const selectedTickers = getSelectedTickers();
         const fallbackCount = selectedTickers.length || Object.keys(ASSETS).length;
+        const isAutoLive = params.auto_live === "true";
 
         console.info("[dashboard] fetch start", params);
         const isStale = params.stale === "true";
@@ -1194,6 +1195,13 @@ def build_app():
           }
           const payload = await response.json();
           if (!payload.assets || payload.assets.length === 0) {
+            if (isStale && !isAutoLive) {
+              setStatus("캐시가 없습니다. 실시간 데이터를 불러오는 중입니다...");
+              const nextParams = { ...params, auto_live: "true" };
+              delete nextParams.stale;
+              loadData(nextParams);
+              return;
+            }
             if (isStale) {
               setStatus("캐시가 없습니다. 갱신 버튼을 눌러주세요.");
             } else {
